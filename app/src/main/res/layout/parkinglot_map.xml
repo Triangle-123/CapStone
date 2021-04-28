@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/parkinglot_map">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ly_map"
+        android:background="@drawable/shape_under">
+        <ImageButton
+            android:id="@+id/btn_map_back"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/back2"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="주차장 정보"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="#000"
+            android:gravity="center"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/map_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/ly_map">
+    </RelativeLayout>
+
+
+
+    <ImageButton
+        android:layout_width="45dp"
+        android:layout_height="60dp"
+        android:id="@+id/btn_zoomin"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="8dp"
+        android:layout_below="@id/ly_map"
+        android:background="@drawable/btn2"
+        android:layout_alignParentRight="true"/>
+    <ImageButton
+        android:layout_width="45dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/btn_zoomin"
+        android:layout_marginRight="8dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/btn3"
+
+        android:paddingBottom="1dp"
+        android:id="@+id/btn_zoomout"/>
+
+</RelativeLayout>

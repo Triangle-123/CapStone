@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="70dp"
+    android:layout_gravity="center"
+    android:background="#fff">
+
+    <ImageView
+        android:id="@+id/badge"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center_vertical"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/cku_logo" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/badge"
+        android:id="@+id/ly_text"
+        android:layout_centerVertical="true">
+
+        <TextView
+            android:id="@+id/ball_title"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:text="Custom Marker"
+            android:textColor="#ff000000"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/ball_addr"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ball_title"
+            android:text="custom marker desc."
+            android:textColor="#ff7f7f7f"
+            android:textSize="15sp"
+            android:textAlignment="center"
+            android:gravity="center"/>
+    </RelativeLayout>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/ly_text"
+        android:background="@drawable/arrow"
+        android:layout_centerVertical="true"
+        android:id="@+id/btn_info"/>
+</RelativeLayout>
