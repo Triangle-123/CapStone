@@ -17,6 +17,12 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +30,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 public class loginActivity extends Activity {
@@ -135,10 +142,11 @@ public class loginActivity extends Activity {
             /* 서버에서 응답 */
             Log.e("RECV DATA",data);
 
-            if(data.equals("1"))
+            if(data.equals("1")) // 로그인 성공
             {
                 Toast.makeText(getApplicationContext(), "로그인 되었습니다.", Toast.LENGTH_SHORT).show();
-                finish();
+                LogonDBquery query = new LogonDBquery();
+                query.execute();
             }
             else if(data.equals("0"))
             {
@@ -152,6 +160,49 @@ public class loginActivity extends Activity {
                 dialog = builder.setMessage("ID가 일치하지 않습니다.").setPositiveButton("확인", null).create();
                 dialog.show();
             }
+        }
+    }
+
+    private class LogonDBquery extends AsyncTask<String,Void,String> {
+
+        @Override
+        protected String doInBackground(String... arg0) {
+
+            try {
+                String id = userID;
+
+                String link = "http://hong123.dothome.co.kr/Logonquery.php?ID=" + id;
+                URL url = new URL(link);
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+                HttpResponse response = client.execute(request);
+                BufferedReader in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                    break;
+                }
+
+                in.close();
+                return sb.toString();
+            } catch (Exception e) {
+                return new String("Exception: " + e.getMessage());
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Intent data = new Intent();
+            data.putExtra("id", userID);
+            data.putExtra("name", result);
+            setResult(Activity.RESULT_OK, data);
+            finish();
         }
     }
 }
