@@ -22,47 +22,45 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-public class NoticeWriteActivity extends Activity {
+public class NoticeEditActivity extends Activity {
 
-    String userID, userName;
-    EditText nb_id, nb_name, nb_time, nb_title, nb_content;
+    String userID, userName, nb_time, nb_title, nb_content;
+    EditText tv_nb_id, tv_nb_name, tv_nb_time, tv_nb_title, tv_nb_content;
     Button nb_back;
     AlertDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.notice_write);
+        setContentView(R.layout.notice_edit);
 
         Intent intent = getIntent();
-        userID = intent.getStringExtra("userID");
-        userName = intent.getStringExtra("userName");
+        userID = intent.getStringExtra("nb_ID");
+        userName = intent.getStringExtra("nb_Name");
+        nb_time = intent.getStringExtra("nb_Time");
+        nb_title = intent.getStringExtra("nb_Title");
+        nb_content = intent.getStringExtra("nb_Content");
 
-        nb_id = (EditText) findViewById(R.id.nb_id);
-        nb_name = (EditText) findViewById(R.id.nb_name);
-        nb_time = (EditText) findViewById(R.id.nb_time);
-        nb_title = (EditText) findViewById(R.id.nb_title);
-        nb_content = (EditText) findViewById(R.id.nb_content);
+        tv_nb_id = (EditText) findViewById(R.id.nb_id);
+        tv_nb_name = (EditText) findViewById(R.id.nb_name);
+        tv_nb_time = (EditText) findViewById(R.id.nb_time);
+        tv_nb_title = (EditText) findViewById(R.id.nb_title);
+        tv_nb_content = (EditText) findViewById(R.id.nb_content);
 
         StringUtils stringUtils = new StringUtils();
-        nb_id.setText(userID.substring(0,3) + stringUtils.repeat("*", userID.substring(3).length()));
-        nb_name.setText(userName);
-
-        long now = System.currentTimeMillis();
-        Date date = new Date(now);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        String getTime = sdf.format(date);
-        nb_time.setText(getTime);
+        tv_nb_id.setText(userID.substring(0,3) + stringUtils.repeat("*", userID.substring(3).length()));
+        tv_nb_name.setText(userName);
+        tv_nb_time.setText(nb_time);
+        tv_nb_title.setText(nb_title);
+        tv_nb_content.setText(nb_content);
 
         nb_back = (Button) findViewById(R.id.nb_back);
         nb_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(NoticeWriteActivity.this);
-                builder.setMessage("글 작성을 취소하시겠습니까?\n(작성된 내용은 모두 사라집니다.)");
+                AlertDialog.Builder builder = new AlertDialog.Builder(NoticeEditActivity.this);
+                builder.setMessage("글 편집을 취소하시겠습니까?\n(편집한 내용은 저장되지 않습니다.)");
                 builder.setPositiveButton("아니오", null);
                 builder.setNegativeButton("예", new DialogInterface.OnClickListener() {
                     @Override
@@ -79,8 +77,8 @@ public class NoticeWriteActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(NoticeWriteActivity.this);
-        builder.setMessage("글 작성을 취소하시겠습니까?\n(작성된 내용은 모두 사라집니다.)");
+        AlertDialog.Builder builder = new AlertDialog.Builder(NoticeEditActivity.this);
+        builder.setMessage("글 편집을 취소하시겠습니까?\n(편집한 내용은 저장되지 않습니다.)");
         builder.setPositiveButton("아니오", null);
         builder.setNegativeButton("예", new DialogInterface.OnClickListener() {
             @Override
@@ -93,22 +91,21 @@ public class NoticeWriteActivity extends Activity {
     }
 
     public void btn_write(View v) {
-        if(nb_title.getText().toString().equals("") || nb_title.getText().toString() == null) {
+        if(tv_nb_title.getText().toString().equals("") || tv_nb_title.getText().toString() == null) {
             Toast.makeText(getApplicationContext(), "제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
             return;
         }
-        else if (nb_content.getText().toString().equals("") || nb_content.getText().toString() == null) {
+        else if (tv_nb_content.getText().toString().equals("") || tv_nb_content.getText().toString() == null) {
             Toast.makeText(getApplicationContext(), "내용을 입력해주세요.", Toast.LENGTH_SHORT).show();
             return;
         }
         else {
-            WriteDB wdb = new WriteDB();
-            wdb.execute();
+            UpdateDB udb = new UpdateDB();
+            udb.execute();
         }
     }
 
-
-    public class WriteDB extends AsyncTask<Void, Integer, Void> {
+    public class UpdateDB extends AsyncTask<Void, Integer, Void> {
 
         String data = "";
 
@@ -116,11 +113,11 @@ public class NoticeWriteActivity extends Activity {
         protected Void doInBackground(Void... unused) {
 
             /* 인풋 파라메터값 생성 */
-            String param = "u_id=" + userID + "&u_name=" + userName + "&time=" + nb_time.getText().toString() +
-                    "&title=" + nb_title.getText().toString() + "&content=" + nb_content.getText().toString() + "";
+            String param = "time=" + tv_nb_time.getText().toString() + "&title=" + tv_nb_title.getText().toString()
+                    + "&content=" + tv_nb_content.getText().toString() + "";
             try {
                 /* 서버연결 */
-                URL url = new URL("http://hong123.dothome.co.kr/NoticeWrite.php");
+                URL url = new URL("http://hong123.dothome.co.kr/NoticeUpdate.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
@@ -161,8 +158,8 @@ public class NoticeWriteActivity extends Activity {
             super.onPostExecute(aVoid);
 
             Log.e("RECV DATA",data);
-            if(data.equals("insert success")) {
-                Toast.makeText(getApplicationContext(), "게시글이 작성되었습니다.", Toast.LENGTH_SHORT).show();
+            if(data.equals("update success")) {
+                Toast.makeText(getApplicationContext(), "게시글이 편집되었습니다.", Toast.LENGTH_SHORT).show();
                 Intent intent = getIntent();
                 setResult(RESULT_OK, intent);
                 finish();
